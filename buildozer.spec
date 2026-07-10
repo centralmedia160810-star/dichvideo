@@ -19,4 +19,8 @@ fullscreen = 0
 [buildozer]
 log_level = 2
 warn_on_root = 0
-
+android.accept_sdk_license = True
+android.sdk = 24
+android.ndk = 25b
+android.api = 33
+android.arch = arm64-v8a
