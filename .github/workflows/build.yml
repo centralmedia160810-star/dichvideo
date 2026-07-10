@@ -1,0 +1,22 @@
+name: Build APK Video Dịch
+on: workflow_dispatch
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lấy mã nguồn
+        uses: actions/checkout@v4
+
+      - name: Xây dựng APK
+        uses: tgambet/buildozer-action@v1
+        with:
+          buildozer-args: android debug
+
+      - name: Tải kết quả APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APP-VIDEO-DICH-1080P
+          path: bin/*.apk
+          retention-days: 30
+          
