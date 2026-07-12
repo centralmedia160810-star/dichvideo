@@ -4,7 +4,7 @@ package.name = videodich
 package.domain = org.video.dich
 source.dir = .
 version = 0.1
-requirements = python3, kivy==2.3.0, googletrans==4.0.0-rc1, gTTS, moviepy
+requirements = python3, kivy, googletrans==4.0.0-rc1, gTTS, moviepy,ffmpeg
 android.permissions = INTERNET, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
 android.api = 33
 android.archs = arm64-v8a
