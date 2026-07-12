@@ -24,7 +24,8 @@ jobs:
       - name: Biên dịch APK
         run: |
           source venv/bin/activate
-          yes "" | buildozer android debug
+          printf "y\ny\ny\n" | buildozer android debug
+          
 
       - name: Lưu kết quả APK
         uses: actions/upload-artifact@v4
