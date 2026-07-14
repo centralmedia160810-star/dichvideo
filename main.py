@@ -5,7 +5,6 @@ from kivy.uix.label import Label
 from kivy.uix.filechooser import FileChooserListView
 from kivy.utils import platform
 import os
-import sys
 
 # Cấp quyền trên Android
 if platform == "android":
@@ -18,13 +17,13 @@ if platform == "android":
         Permission.INTERNET
     ])
 
+# Import thư viện
 try:
     from gtts import gTTS
     from moviepy.editor import VideoFileClip, AudioFileClip
-    import numpy as np
+    from moviepy.video.fx.all import blur
 except ImportError as e:
-    print(f"Lỗi thư viện: {e}")
-    pass
+    print(f"Lỗi tải thư viện: {e}")
 
 class VideoDichApp(App):
     def build(self):
@@ -82,37 +81,43 @@ class VideoDichApp(App):
     def xu_ly(self, instance):
         self.trangthai.text = "⏳ Đang xử lý, vui lòng chờ..."
         try:
-            # Nội dung dịch ví dụ
+            # Tạo giọng dịch ví dụ
             phude_goc = "Xin chào bạn! Đây là nội dung video được dịch tự động."
             dich = gTTS(text=phude_goc, lang='vi', slow=False)
-            ten_am = "giong_dich.mp3"
+            ten_am = "giong_dich_temp.mp3"
             dich.save(ten_am)
 
             # Mở video & âm thanh
             video = VideoFileClip(self.video_path)
             am_thanh = AudioFileClip(ten_am)
-            video = video.resize((1080, 1920) if video.size[0] < video.size[1] else (1920, 1080))
 
             # Làm mờ nếu bật
             if self.lam_no:
-                from moviepy.video.fx.all import blur
                 video = blur(video, 6)
 
             # Gắn âm thanh mới
             video_cuoi = video.set_audio(am_thanh)
 
-            # Lưu tệp đúng đường dẫn Android
+            # Lưu tệp đúng vị trí
             if platform == "android":
-                thu_muc = primary_external_storage_path()
-                luu_duong = os.path.join(thu_muc, "Download", "VIDEO_DICH.mp4")
+                thu_muc_goc = primary_external_storage_path()
+                luu_duong = os.path.join(thu_muc_goc, "Download", "VIDEO_DICH_HOAN_CHINH.mp4")
             else:
-                luu_duong = "VIDEO_DICH.mp4"
+                luu_duong = "VIDEO_DICH_HOAN_CHINH.mp4"
 
-            video_cuoi.write_videofile(luu_duong, fps=30, codec="libx264", audio_codec="aac")
+            # Xuất video
+            video_cuoi.write_videofile(
+                luu_duong,
+                fps=30,
+                codec="libx264",
+                audio_codec="aac",
+                verbose=False,
+                logger=None
+            )
             
             # Xóa tệp tạm
             os.remove(ten_am)
-            self.trangthai.text = f"✅ HOÀN THÀNH! Đã lưu tại: {luu_duong}"
+            self.trangthai.text = f"✅ HOÀN THÀNH! Đã lưu: {luu_duong}"
 
         except Exception as e:
             self.trangthai.text = f"❌ Lỗi: {str(e)}"
@@ -120,4 +125,4 @@ class VideoDichApp(App):
 
 if __name__ == "__main__":
     VideoDichApp().run()
-        
+            
