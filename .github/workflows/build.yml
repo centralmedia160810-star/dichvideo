@@ -1,35 +1,33 @@
-name: Build APK Video Dịch
-on: workflow_dispatch
+name: Biên Dịch App Video Dịch
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Chạy thủ công được
 
 jobs:
   build-apk:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    timeout-minutes: 60 # Tăng thời gian đủ biên dịch
     steps:
-      - name: Lấy mã nguồn dự án
+      - name: Lấy mã nguồn
         uses: actions/checkout@v4
 
-      - name: Cài đầy đủ phụ thuộc hệ thống
-        run: |
-          sudo apt update -y
-          sudo apt full-upgrade -y
-          sudo apt install -y build-essential git zip unzip openjdk-17-jdk python3-dev python3-pip libffi-dev libssl-dev autoconf libtool pkg-config zlib1g-dev libncurses5-dev libtinfo6 cmake libsqlite3-dev bzip2 libreadline-dev libgdbm-dev liblzma-dev tk-dev libjpeg-dev zlib1g-dev libpng-dev freetype2-demos
-
-      - name: Cài Buildozer & môi trường
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip setuptools wheel
-          pip install buildozer==1.5.0 Cython==0.29.37
-
       - name: Biên dịch APK
-        run: |
-          source venv/bin/activate
-          printf "y\ny\ny\n" | buildozer android debug
-          
+        uses: kivy/buildozer-action@v1 # Action chính thức, không cài đặt thủ công
+        with:
+          buildozer_args: android debug
+          python_version: '3.10'
+        env:
+          BUILDOZER_APK_DEBUG: 1
+          NDK_CCACHE: 1
+          CCACHE_SIZE: 1G # Tăng bộ nhớ cho thư viện nặng
 
-      - name: Lưu kết quả APK
+      - name: Lấy tệp APK
         uses: actions/upload-artifact@v4
         with:
-          name: APP-VIDEO-DICH-THANHCONG
+          name: APK_Video_Dich
           path: bin/*.apk
           retention-days: 30
+          
