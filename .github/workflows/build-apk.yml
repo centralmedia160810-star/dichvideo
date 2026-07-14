@@ -9,7 +9,7 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
-    timeout-minutes: 90 # Tăng thêm thời gian tải SDK
+    timeout-minutes: 90
     steps:
       - name: Lấy mã nguồn dự án
         uses: actions/checkout@v4
@@ -19,21 +19,40 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Cài đặt đầy đủ phụ thuộc hệ thống
+      - name: Cài đặt phụ thuộc hệ thống & Android SDK
         run: |
           sudo apt-get update -y
           sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip python3-venv libffi-dev libssl-dev autoconf automake libtool pkg-config zlib1g-dev ncurses-dev
+
+          # Tải Android Command Tools để có sẵn sdkmanager
+          mkdir -p ~/android-sdk/cmdline-tools
+          cd ~/android-sdk/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076758_latest.zip -O cmd.zip
+          unzip -q cmd.zip
+          mv cmdline-tools latest
+          rm cmd.zip
+
+          # Thêm vào đường dẫn
+          echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export PATH=$HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH" >> $GITHUB_ENV
+          source $GITHUB_ENV
+
+          # Cài đặt đầy đủ build-tools, aidl, nền tảng
+          yes | sdkmanager --licenses || true
+          sdkmanager "platform-tools" "build-tools;33.0.2" "platforms;android-33"
+
+          # Cài Buildozer và Cython phiên bản ổn định
           pip install --upgrade pip setuptools wheel
           pip install buildozer==1.5.0 cython==0.29.37
 
-      - name: Cấu hình Buildozer & Tải SDK/NDK đầy đủ
+      - name: Xóa bộ nhớ đệm cũ & Biên dịch APK
         run: |
           buildozer android clean || true
-          # Tải trước toàn bộ công cụ để không bị thiếu
-          buildozer android debug || true
-
-      - name: Biên dịch APK chính thức
-        run: buildozer android debug
+          buildozer android debug
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
 
       - name: Tải tệp APK kết quả
         uses: actions/upload-artifact@v4
