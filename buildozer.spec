@@ -14,7 +14,7 @@ android.ndk = 25b
 android.sdk = 24
 android.optimize = 0
 android.buildtools = 33.0.2
-android.accepts_license = True
+android.accepts_license = True  # ✅ DÒNG QUAN TRỌNG NHẤT
 
 android.permissions = INTERNET,READ_MEDIA_VIDEO,READ_MEDIA_AUDIO,WRITE_EXTERNAL_STORAGE,FOREGROUND_SERVICE
 android.arch = arm64-v8a,armeabi-v7a
@@ -26,4 +26,3 @@ fullscreen = 0
 log_level = 2
 warn_on_root = 0
 android.allow_backup = True
-
