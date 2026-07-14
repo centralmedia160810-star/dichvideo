@@ -26,3 +26,4 @@ fullscreen = 0
 log_level = 2
 warn_on_root = 0
 android.allow_backup = True
+
