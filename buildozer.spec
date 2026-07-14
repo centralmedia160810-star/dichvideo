@@ -12,12 +12,13 @@ android.python_version = 3.10
 android.api = 33
 android.ndk = 25b
 android.sdk = 24
+android.ndk_api = 21
+android.archs = arm64-v8a,armeabi-v7a  # ✅ SỬA TỪ `android.arch` → `android.archs`
 android.optimize = 0
 android.buildtools = 33.0.2
-android.accepts_license = True  # ✅ DÒNG QUAN TRỌNG NHẤT
+android.accepts_license = True
 
 android.permissions = INTERNET,READ_MEDIA_VIDEO,READ_MEDIA_AUDIO,WRITE_EXTERNAL_STORAGE,FOREGROUND_SERVICE
-android.arch = arm64-v8a,armeabi-v7a
 
 orientation = portrait
 fullscreen = 0
@@ -26,3 +27,4 @@ fullscreen = 0
 log_level = 2
 warn_on_root = 0
 android.allow_backup = True
+
