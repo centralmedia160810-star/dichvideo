@@ -1,28 +1,33 @@
 [app]
-title = Video Dịch Lồng Tiếng
+title = Video Dịch Lời Tiếng
 package.name = videodich
-package.domain = org.video.dich
+package.domain = org.videodich
 source.dir = .
-version = 0.1
+source.include_exts = py,png,jpg,jpeg,kv,atlas,ttf,otf,mp4,mkv,avi,srt
+source.ignore_dirs = .git,.github,__pycache__,buildozer
+version = 1.0
 
-# Dùng phiên bản Kivy ổn định, tương thích cao nhất
-requirements = python3, kivy==2.2.1, googletrans==4.0.0-rc1, gTTS, moviepy, ffmpeg
-
-android.permissions = INTERNET, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
+# === THƯ VIỆN ĐÚNG PHIÊN BẢN, HỖ TRỢ ANDROID ===
+requirements = python3,kivy==2.2.1,pillow==10.2.0,numpy==1.26.4,opencv-python-headless==4.9.0.80,moviepy==1.0.3,pydub==0.25.1,requests==2.31.0
+android.python_version = 3.10
 android.api = 33
-android.archs = arm64-v8a
-# Thêm cấu hình tối ưu đồ họa
-android.minapi = 21
-android.ndk_api = 21
+android.ndk = 25b
+android.sdk = 24
+android.optimize = 0
+
+# === QUYỀN TRUY CẬP ĐẦY ĐỦ ===
+android.permissions = INTERNET,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,READ_MEDIA_VIDEO,READ_MEDIA_AUDIO,FOREGROUND_SERVICE
+android.arch = arm64-v8a,armeabi-v7a
 
 orientation = portrait
 fullscreen = 0
 
+# === HỖ TRỢ FFMPEG CHO ANDROID ===
+android.ndk_api = 21
+android.gradle_dependencies =
+android.buildtools = 33.0.2
+
 [buildozer]
 log_level = 2
 warn_on_root = 0
-android.accept_sdk_license = True
-android.sdk_license_agreement = yes
-# Giảm cảnh báo biên dịch
-android.cflags = -Wno-error
-
+android.allow_backup = True
